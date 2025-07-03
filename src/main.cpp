@@ -5,8 +5,8 @@
 #include "utils.h"
 
 Sensors sensors;
-Chauffage chauffage;
-WebServer web;
+Chauffage chauffage(&sensors);
+WebServerApp web(&sensors, &chauffage);
 
 void setup() {
     sensors.begin();

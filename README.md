@@ -1,4 +1,4 @@
-# chauffe_piscine_esp32# Chauffe Piscine ESP32 🏊‍♂️🔥
+# Chauffe Piscine ESP32 🏊‍♂️🔥
 
 Projet domotique open source basé sur ESP32 pour piloter automatiquement le chauffage d'une piscine en fonction de la température de l’eau et d’un horaire cible.
 
