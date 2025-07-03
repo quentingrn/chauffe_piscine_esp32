@@ -1,41 +1,31 @@
-# Prerequisites
+# === VS Code ===
+.vscode/
+*.code-workspace
+
+# === macOS ===
+.DS_Store
+
+# === PlatformIO ===
+.pio/
+*.elf
+*.bin
+*.hex
+
+# === Arduino IDE ===
+*.ino.*
+*.sdf
 *.d
+*.dep
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+# === Fichiers de logs ou runtime ===
+*.log
+*.csv
 
-# Precompiled Headers
-*.gch
-*.pch
+# === SPIFFS et fichiers générés ===
+data/chauffage.csv
+data/history.csv
+spiffs.bin
 
-# Linker files
-*.ilk
-
-# Debugger Files
-*.pdb
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
-
-# debug information files
-*.dwo
+# === Fichiers temporaires ===
+*.bak
+*.tmp
