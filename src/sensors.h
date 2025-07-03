@@ -5,7 +5,8 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
-class Sensors {
+// Manages the DS18B20 sensors (water and air)
+class SensorsManager {
 public:
     void begin();
     void update();

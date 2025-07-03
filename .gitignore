@@ -20,10 +20,10 @@
 # === Fichiers de logs ou runtime ===
 *.log
 *.csv
+!data/chauffage.csv
+!data/history.csv
 
 # === SPIFFS et fichiers générés ===
-data/chauffage.csv
-data/history.csv
 spiffs.bin
 
 # === Fichiers temporaires ===

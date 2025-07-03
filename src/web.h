@@ -4,12 +4,13 @@
 #include <Arduino.h>
 #include <WebServer.h>
 
-class Sensors;
-class Chauffage;
+class SensorsManager;
+class ChauffageManager;
 
-class WebServerApp {
+// Simple web interface using ESP32 WebServer
+class WebManager {
 public:
-    WebServerApp(Sensors* sensorsRef, Chauffage* chauffageRef);
+    WebManager(SensorsManager* sensorsRef, ChauffageManager* chauffageRef);
     void begin();
     void handleClient();
 
@@ -17,10 +18,11 @@ private:
     void handleRoot();
     void handleOn();
     void handleOff();
+    void handleHistory();
 
     WebServer server{80};
-    Sensors* sensors;
-    Chauffage* chauffage;
+    SensorsManager* sensors;
+    ChauffageManager* chauffage;
 };
 
 #endif // WEB_H
