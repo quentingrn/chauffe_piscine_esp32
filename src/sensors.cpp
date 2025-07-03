@@ -1,6 +1,6 @@
 #include "sensors.h"
 
-void Sensors::begin() {
+void SensorsManager::begin() {
     ds.begin();
     if (ds.getDeviceCount() >= 2) {
         ds.getAddress(waterAddr, 0);
@@ -8,7 +8,7 @@ void Sensors::begin() {
     }
 }
 
-void Sensors::update() {
+void SensorsManager::update() {
     ds.requestTemperatures();
     waterTemp = ds.getTempC(waterAddr);
     airTemp = ds.getTempC(airAddr);

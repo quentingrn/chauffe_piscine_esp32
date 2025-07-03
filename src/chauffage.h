@@ -4,26 +4,35 @@
 #include <Arduino.h>
 #include <Servo.h>
 
-class Sensors; // forward declaration
+class SensorsManager; // forward declaration
 
-class Chauffage {
+// Controls the heating servo and automation modes
+class ChauffageManager {
 public:
-    explicit Chauffage(Sensors* sensorsRef) : sensors(sensorsRef) {}
+    enum Mode { MANUEL, AUTO_ADULTE, AUTO_ENFANT };
+
+    explicit ChauffageManager(SensorsManager* sensorsRef) : sensors(sensorsRef) {}
 
     void begin();
     void update();
 
     void manualOn();
     void manualOff();
-    void setAutoMode(bool enabled) { autoMode = enabled; }
+    void setMode(Mode m);
+    Mode getMode() const { return mode; }
     bool isOn() const { return heating; }
+    float getTargetTemp() const { return targetTemp; }
 
 private:
-    Sensors* sensors;
+
+    void logState();
+
+    SensorsManager* sensors;
     Servo servo;
     bool heating = false;
-    bool autoMode = true;
-    float targetTemp = 28.0f; // target water temperature
+    Mode mode = AUTO_ADULTE;
+    float targetTemp = 33.0f; // default target temp for adult mode
+    unsigned long lastLog = 0;
 };
 
 #endif // CHAUFFAGE_H
