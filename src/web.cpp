@@ -4,6 +4,7 @@
 #include "FS.h"
 #include "SPIFFS.h"
 #include "utils.h"
+#include <functional>
 
 WebManager::WebManager(SensorsManager* sensorsRef, ChauffageManager* chauffageRef)
     : sensors(sensorsRef), chauffage(chauffageRef) {}
