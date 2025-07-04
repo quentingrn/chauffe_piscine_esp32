@@ -20,6 +20,7 @@ private:
     void handleOn();
     void handleOff();
     void handleHistory();
+    void handleHeatingLog();
 
     WebServer server{80};
     SensorsManager* sensors;
