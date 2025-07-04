@@ -8,6 +8,11 @@
 #include <SPIFFS.h>
 #include <time.h>
 
+// Enable or disable debug output on the Serial monitor
+#ifndef DEBUG_MODE
+#define DEBUG_MODE 1
+#endif
+
 static const char* WIFI_SSID = "YOUR_SSID";
 static const char* WIFI_PASS = "YOUR_PASSWORD";
 
@@ -49,6 +54,21 @@ void loop() {
             f.printf("%s,%.2f,%.2f,%d\n", Utils::timestamp().c_str(), sensors.getWaterTemp(), sensors.getAirTemp(), chauffage.isOn());
             f.close();
         }
+
+#if DEBUG_MODE
+        String wifiInfo;
+        if (WiFi.status() == WL_CONNECTED) {
+            wifiInfo = "WiFi:" + WiFi.localIP().toString();
+        } else {
+            wifiInfo = "WiFi:DISCONNECTED";
+        }
+        const char* modeStr = (chauffage.getMode() == ChauffageManager::MANUEL) ? "MANUEL" : "AUTO";
+        String line = wifiInfo + " | MODE:" + modeStr +
+                      " | Eau:" + Utils::formatFloat(sensors.getWaterTemp()) + "C" +
+                      " Air:" + Utils::formatFloat(sensors.getAirTemp()) + "C" +
+                      " | Servo:" + (chauffage.isOn() ? "ON" : "OFF");
+        Serial.println(line);
+#endif
     }
 }
 
