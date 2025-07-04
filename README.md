@@ -29,10 +29,19 @@ Projet domotique open source basé sur ESP32 pour piloter automatiquement le cha
 
 ---
 
+## 🔧 Configuration
+
+Les paramètres modifiables (Wi-Fi, broches GPIO, etc.) se trouvent dans `src/config.h`.
+Avant de compiler, éditez ce fichier pour y renseigner votre SSID, mot de passe
+et éventuellement la température ou l'heure cible.
+
+---
+
 ## 🧱 Arborescence du projet
 chauffe_piscine_esp32/
 ├── src/
 │ ├── main.cpp
+│ ├── config.h
 │ ├── sensors.cpp / .h
 │ ├── chauffage.cpp / .h
 │ ├── web.cpp / .h
