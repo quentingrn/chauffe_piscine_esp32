@@ -2,7 +2,7 @@
 #define CHAUFFAGE_H
 
 #include <Arduino.h>
-#include <Servo.h>
+#include <ESP32Servo.h>
 
 #include "config.h"
 #include "utils.h"
