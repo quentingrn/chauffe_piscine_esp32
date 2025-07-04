@@ -2,83 +2,66 @@
 #include "sensors.h"
 #include "FS.h"
 #include "SPIFFS.h"
-#include "config.h"
 
 void ChauffageManager::begin() {
-    servo.attach(SERVO_PIN);
-}
-
-void ChauffageManager::setMode(Mode m) {
-    mode = m;
-    switch (mode) {
-        case AUTO_ADULTE:
-            targetTemp = 33.0f;
-            break;
-        case AUTO_ENFANT:
-            targetTemp = 29.0f;
-            break;
-        default:
-            break;
-    }
+    servo.attach(PIN_SERVO);
 }
 
 void ChauffageManager::manualOn() {
-    heating = true;
-    servo.write(180); // arbitrary position for ON
-    logState();
+    applyHeating(true);
 }
 
 void ChauffageManager::manualOff() {
-    heating = false;
-    servo.write(0); // position for OFF
+    applyHeating(false);
+}
+
+bool ChauffageManager::withinSchedule(const tm& t) const {
+    if (!schedule.enabled) return true;
+    int current = t.tm_hour * 60 + t.tm_min;
+    int start = schedule.startHour * 60 + schedule.startMin;
+    int end = schedule.endHour * 60 + schedule.endMin;
+    if (start <= end) {
+        return current >= start && current < end;
+    }
+    return current >= start || current < end;
+}
+
+void ChauffageManager::applyHeating(bool on) {
+    if (heating == on) return;
+    heating = on;
+    servo.write(on ? 180 : 0);
     logState();
 }
 
 void ChauffageManager::update() {
-    if (!sensors) {
+    if (!sensors) return;
+
+    time_t raw;
+    time(&raw);
+    tm timeinfo;
+    localtime_r(&raw, &timeinfo);
+
+    if (!withinSchedule(timeinfo)) {
+        if (heating) applyHeating(false);
         return;
     }
 
-    time_t now;
-    time(&now);
-    struct tm timeinfo;
-    localtime_r(&now, &timeinfo);
-
-    if (mode != MANUEL) {
-        // Determine target temperature based on mode and schedule
-        if (mode == AUTO_ADULTE && (timeinfo.tm_hour < 17 || timeinfo.tm_hour >= 21)) {
-            manualOff();
-            return;
-        }
-        if (mode == AUTO_ENFANT && (timeinfo.tm_hour < 12 || timeinfo.tm_hour >= 17)) {
-            manualOff();
-            return;
-        }
-
+    if (mode == AUTO) {
         float water = sensors->getWaterTemp();
         if (!isnan(water)) {
-            if (water < targetTemp && !heating) {
-                manualOn();
-            } else if (water >= targetTemp && heating) {
-                manualOff();
+            if (water < targetTemp) {
+                applyHeating(true);
+            } else {
+                applyHeating(false);
             }
         }
     }
 }
 
 void ChauffageManager::logState() {
-    unsigned long now = millis();
-    if (now - lastLog < 1000) return; // debounce
-    lastLog = now;
     File f = SPIFFS.open("/chauffage.csv", FILE_APPEND);
     if (f) {
-        time_t t;
-        time(&t);
-        struct tm *tm_info = localtime(&t);
-        char buf[32];
-        strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", tm_info);
-        f.printf("%s,%s\n", buf, heating ? "ON" : "OFF");
+        f.printf("%s,%s\n", Utils::timestamp().c_str(), heating ? "ON" : "OFF");
         f.close();
     }
 }
-

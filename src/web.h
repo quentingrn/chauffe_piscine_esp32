@@ -16,6 +16,7 @@ public:
 
 private:
     void handleRoot();
+    void handleSet();
     void handleOn();
     void handleOff();
     void handleHistory();

@@ -9,10 +9,11 @@ WebManager::WebManager(SensorsManager* sensorsRef, ChauffageManager* chauffageRe
     : sensors(sensorsRef), chauffage(chauffageRef) {}
 
 void WebManager::begin() {
-    server.on("/", [this]() { handleRoot(); });
-    server.on("/on", [this]() { handleOn(); });
-    server.on("/off", [this]() { handleOff(); });
-    server.on("/history.csv", [this]() { handleHistory(); });
+    server.on("/", HTTP_GET, std::bind(&WebManager::handleRoot, this));
+    server.on("/", HTTP_POST, std::bind(&WebManager::handleSet, this));
+    server.on("/on", HTTP_GET, std::bind(&WebManager::handleOn, this));
+    server.on("/off", HTTP_GET, std::bind(&WebManager::handleOff, this));
+    server.on("/history.csv", HTTP_GET, std::bind(&WebManager::handleHistory, this));
     server.begin();
 }
 
@@ -21,18 +22,54 @@ void WebManager::handleClient() {
 }
 
 void WebManager::handleRoot() {
-    String page = "<html><head><script src='https://cdn.jsdelivr.net/npm/chart.js'></script></head><body>";
-    page += "<h1>Chauffe Piscine</h1>";
+    ChauffageManager::Schedule sch = chauffage->getSchedule();
+    String page = "<html><body><h1>Chauffe Piscine</h1>";
     page += "<p>Eau: " + Utils::formatFloat(sensors->getWaterTemp()) + "&deg;C<br>";
     page += "Air: " + Utils::formatFloat(sensors->getAirTemp()) + "&deg;C<br>";
     page += "Etat chauffage: " + String(chauffage->isOn() ? "ON" : "OFF") + "</p>";
-    page += "<a href='/on'>ON</a> | <a href='/off'>OFF</a><br><br>";
-    page += "<canvas id='chart' width='300' height='200'></canvas>";
-    page += "<script>\n";
-    page += "fetch('/history.csv').then(r=>r.text()).then(t=>{const lines=t.trim().split('\\n').slice(1);const labels=[];const water=[];const air=[];lines.forEach(l=>{const p=l.split(',');labels.push(p[0]);water.push(parseFloat(p[1]));air.push(parseFloat(p[2]));});new Chart(document.getElementById('chart'),{type:'line',data:{labels:labels,datasets:[{label:'Eau',data:water,borderColor:'blue',fill:false},{label:'Air',data:air,borderColor:'red',fill:false}]}});});";
-    page += "</script>";
+    page += "<form method='post'>";
+    page += "Mode: <select name='mode'>";
+    page += "<option value='MANUEL'";
+    if (chauffage->getMode() == ChauffageManager::MANUEL) page += " selected";
+    page += ">MANUEL</option>";
+    page += "<option value='AUTO'";
+    if (chauffage->getMode() == ChauffageManager::AUTO) page += " selected";
+    page += ">AUTO</option></select><br>";
+    page += "Temp cible: <input type='number' step='0.1' name='target' value='" + String(chauffage->getTargetTemp(),1) + "'><br>";
+    page += "<input type='checkbox' name='schedule'";
+    if (sch.enabled) page += " checked";
+    page += ">Utiliser plage horaire<br>";
+    page += "Début: <input type='time' name='start' value='" + Utils::formatTime(sch.startHour, sch.startMin) + "'><br>";
+    page += "Fin: <input type='time' name='end' value='" + Utils::formatTime(sch.endHour, sch.endMin) + "'><br>";
+    page += "<input type='submit' value='Sauver'></form>";
+    if (chauffage->getMode() == ChauffageManager::MANUEL) {
+        page += "<p><a href='/on'>FORCER ON</a> | <a href='/off'>FORCER OFF</a></p>";
+    }
+    page += "<p><a href='/history.csv'>Historique</a></p>";
     page += "</body></html>";
     server.send(200, "text/html", page);
+}
+
+void WebManager::handleSet() {
+    if (server.hasArg("mode")) {
+        String m = server.arg("mode");
+        if (m == "MANUEL") chauffage->setMode(ChauffageManager::MANUEL);
+        else chauffage->setMode(ChauffageManager::AUTO);
+    }
+    if (server.hasArg("target")) {
+        chauffage->setTargetTemp(server.arg("target").toFloat());
+    }
+    ChauffageManager::Schedule sch = chauffage->getSchedule();
+    sch.enabled = server.hasArg("schedule");
+    if (server.hasArg("start")) {
+        sscanf(server.arg("start").c_str(), "%2hhu:%2hhu", &sch.startHour, &sch.startMin);
+    }
+    if (server.hasArg("end")) {
+        sscanf(server.arg("end").c_str(), "%2hhu:%2hhu", &sch.endHour, &sch.endMin);
+    }
+    chauffage->setSchedule(sch);
+    server.sendHeader("Location", "/", true);
+    server.send(303, "text/plain", "");
 }
 
 void WebManager::handleOn() {
@@ -56,4 +93,3 @@ void WebManager::handleHistory() {
         server.send(404, "text/plain", "Not found");
     }
 }
-

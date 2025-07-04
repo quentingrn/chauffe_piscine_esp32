@@ -16,3 +16,9 @@ String Utils::timestamp() {
     return String(buf);
 }
 
+String Utils::formatTime(uint8_t hour, uint8_t minute) {
+    char buf[6];
+    snprintf(buf, sizeof(buf), "%02u:%02u", hour, minute);
+    return String(buf);
+}
+
