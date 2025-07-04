@@ -43,7 +43,7 @@ void ChauffageManager::update() {
     tm timeinfo;
     localtime_r(&raw, &timeinfo);
 
-    if (!withinSchedule(timeinfo)) {
+    if (mode != MANUEL && !withinSchedule(timeinfo)) {
         if (heating) applyHeating(false);
         return;
     }
