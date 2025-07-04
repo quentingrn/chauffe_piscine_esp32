@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <Servo.h>
+#include "config.h"
 
 class SensorsManager; // forward declaration
 
@@ -31,7 +32,7 @@ private:
     Servo servo;
     bool heating = false;
     Mode mode = AUTO_ADULTE;
-    float targetTemp = 33.0f; // default target temp for adult mode
+    float targetTemp = TARGET_TEMPERATURE; // default target temp for adult mode
     unsigned long lastLog = 0;
 };
 

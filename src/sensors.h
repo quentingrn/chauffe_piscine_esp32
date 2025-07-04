@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
+#include "config.h"
 
 // Manages the DS18B20 sensors (water and air)
 class SensorsManager {
@@ -15,7 +16,7 @@ public:
     float getAirTemp() const { return airTemp; }
 
 private:
-    static constexpr uint8_t ONE_WIRE_BUS = 4; // GPIO pin for DS18B20 bus
+    static constexpr uint8_t ONE_WIRE_BUS = ONE_WIRE_PIN; // GPIO pin from config
 
     OneWire oneWire{ONE_WIRE_BUS};
     DallasTemperature ds{&oneWire};

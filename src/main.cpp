@@ -3,6 +3,7 @@
 #include "chauffage.h"
 #include "web.h"
 #include "utils.h"
+#include "config.h"
 #include <WiFi.h>
 #include <FS.h>
 #include <SPIFFS.h>
@@ -13,8 +14,6 @@
 #define DEBUG_MODE 1
 #endif
 
-static const char* WIFI_SSID = "YOUR_SSID";
-static const char* WIFI_PASS = "YOUR_PASSWORD";
 
 SensorsManager sensors;
 ChauffageManager chauffage(&sensors);

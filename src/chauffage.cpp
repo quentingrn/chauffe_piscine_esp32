@@ -2,8 +2,7 @@
 #include "sensors.h"
 #include "FS.h"
 #include "SPIFFS.h"
-
-static constexpr uint8_t SERVO_PIN = 14; // GPIO controlling the switch
+#include "config.h"
 
 void ChauffageManager::begin() {
     servo.attach(SERVO_PIN);
