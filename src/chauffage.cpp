@@ -5,6 +5,7 @@
 
 void ChauffageManager::begin() {
     servo.attach(PIN_SERVO);
+    servo.write(SERVO_POS_OFF);
 }
 
 void ChauffageManager::manualOn() {
@@ -29,7 +30,7 @@ bool ChauffageManager::withinSchedule(const tm& t) const {
 void ChauffageManager::applyHeating(bool on) {
     if (heating == on) return;
     heating = on;
-    servo.write(on ? 180 : 0);
+    servo.write(on ? SERVO_POS_ON : SERVO_POS_OFF);
     logState();
 }
 
