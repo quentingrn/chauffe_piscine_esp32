@@ -1,6 +1,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <Arduino.h>
+
 // Miscellaneous helper utilities
 class Utils {
 public:
