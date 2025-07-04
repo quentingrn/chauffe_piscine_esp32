@@ -4,7 +4,8 @@
 #include "SPIFFS.h"
 
 void ChauffageManager::begin() {
-    servo.attach(PIN_SERVO);
+    // Use a standard 1-2 ms pulse range for better SG90 compatibility
+    servo.attach(PIN_SERVO, 1000, 2000);
     servo.write(SERVO_POS_OFF);
 }
 
