@@ -35,6 +35,15 @@ Les paramètres modifiables (Wi-Fi, broches GPIO, etc.) se trouvent dans `src/co
 Avant de compiler, éditez ce fichier pour y renseigner votre SSID, mot de passe
 et éventuellement la température ou l'heure cible.
 
+Si vous utilisez VS Code avec PlatformIO, vous pouvez spécifier le port série à
+utiliser dans `platformio.ini` via les directives `upload_port` et
+`monitor_port`. Par exemple :
+
+```ini
+upload_port = /dev/cu.usbserial-0001
+monitor_port = /dev/cu.usbserial-0001
+```
+
 ---
 
 ## 🧱 Arborescence du projet
