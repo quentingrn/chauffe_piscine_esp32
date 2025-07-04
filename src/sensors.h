@@ -16,7 +16,7 @@ public:
     float getAirTemp() const { return airTemp; }
 
 private:
-    static constexpr uint8_t ONE_WIRE_BUS = ONE_WIRE_PIN; // GPIO pin from config
+    static constexpr uint8_t ONE_WIRE_BUS = PIN_ONEWIRE; // GPIO pin from config
 
     OneWire oneWire{ONE_WIRE_BUS};
     DallasTemperature ds{&oneWire};
