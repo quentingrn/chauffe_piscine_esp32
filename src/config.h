@@ -22,6 +22,10 @@ static constexpr StartMode DEFAULT_MODE = MODE_AUTO;
 static constexpr uint8_t PIN_SERVO = 14;      // Servo signal
 static constexpr uint8_t PIN_ONEWIRE = 4;     // DS18B20 bus
 
+// Servo positions (degrees)
+static constexpr uint8_t SERVO_POS_OFF = 0;   // Angle when heating is OFF
+static constexpr uint8_t SERVO_POS_ON  = 180; // Angle when heating is ON
+
 // Optional API key placeholder for future use
 static const char* API_KEY = "";
 

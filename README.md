@@ -31,9 +31,10 @@ Projet domotique open source basé sur ESP32 pour piloter automatiquement le cha
 
 ## 🔧 Configuration
 
-Les paramètres modifiables (Wi-Fi, broches GPIO, etc.) se trouvent dans `src/config.h`.
+Les paramètres modifiables (Wi-Fi, broches GPIO, positions du servo, etc.) se trouvent dans `src/config.h`.
 Avant de compiler, éditez ce fichier pour y renseigner votre SSID, mot de passe
 et éventuellement la température ou l'heure cible.
+Vous pouvez également ajuster `SERVO_POS_ON` et `SERVO_POS_OFF` pour adapter les angles d'activation du chauffage.
 
 Si vous utilisez VS Code avec PlatformIO, vous pouvez spécifier le port série à
 utiliser dans `platformio.ini` via les directives `upload_port` et
