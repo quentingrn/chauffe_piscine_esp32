@@ -5,7 +5,13 @@
 
 void ChauffageManager::begin() {
     // Use a standard 1-2 ms pulse range for better SG90 compatibility
+#if DEBUG_MODE
+    int attachResult = servo.attach(PIN_SERVO, 1000, 2000);
+    Serial.print("servo.attach return: ");
+    Serial.println(attachResult);
+#else
     servo.attach(PIN_SERVO, 1000, 2000);
+#endif
     servo.write(SERVO_POS_OFF);
 }
 
@@ -32,6 +38,10 @@ void ChauffageManager::applyHeating(bool on) {
     if (heating == on) return;
     heating = on;
     servo.write(on ? SERVO_POS_ON : SERVO_POS_OFF);
+#if DEBUG_MODE
+    Serial.print("Heating ");
+    Serial.println(on ? "ON" : "OFF");
+#endif
     logState();
 }
 
